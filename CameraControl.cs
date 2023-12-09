@@ -15,6 +15,8 @@ public class CameraControl : MonoBehaviour
     public Vector2 movementAxis;
 
     private Vector3 start,current;
+
+    public Vector2 Min, Max;
     public static bool grab;
     // allows you to lock the movment while in menus
     public static bool locked;
@@ -36,9 +38,10 @@ public class CameraControl : MonoBehaviour
                 //if in dragmode
                 if(grab)
                 {
+                    current = transform.position;
                     //if you want only movement in one axis feel free to delete the other one
                     //Horizontal axis
-                    if(Input.mousePosition.x<screenMargin)
+                    if (Input.mousePosition.x<screenMargin)
                     {
                         transform.position -= new Vector3(grabSpeed * movementAxis.x, 0, 0);
                     }
@@ -61,10 +64,42 @@ public class CameraControl : MonoBehaviour
                     Vector3 diffrence = Input.mousePosition - start;
                     Vector3 controlled = new Vector3(diffrence.x * movementAxis.x, diffrence.y * movementAxis.y);
                     //sensitivity is how much the camera object move per mouse mouse movement 
-                    transform.position = current + controlled * sensitivity * -1;
+                    Vector3 newPos= current + controlled * sensitivity * -1;
+                    transform.position = inLimits(newPos);
+
                 }
                
             }
+            
+           
+        }
+        
+    }
+    private Vector3 inLimits(Vector3 location)
+    {
+        float x = location.x;
+        float y = location.y;
+        if(Min.x>location.x)
+        {
+            x = Min.x;
+        }
+        if (Min.y > location.y)
+        {
+            y = Min.y;
+        }
+        if (Max.x < location.x)
+        {
+            x = Max.x;
+        }
+        if (Max.y < location.y)
+        {
+            y = Max.y;
+        }
+        return new Vector3(x,y,location.z);
+    }
+
+}
+
             
            
         }
